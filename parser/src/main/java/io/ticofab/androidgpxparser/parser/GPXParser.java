@@ -7,8 +7,11 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +76,13 @@ public class GPXParser {
 
     public void parse(String gpxUrl, GpxFetchedAndParsed listener) {
         new FetchAndParseGPXTask(gpxUrl, listener).execute();
+    }
+
+    public Gpx parse(String gpxUrl) throws XmlPullParserException, IOException {
+        URL url = new URL(gpxUrl);
+        HttpURLConnection client = (HttpURLConnection) url.openConnection();
+        InputStream in = new BufferedInputStream(client.getInputStream());
+        return parse(in);
     }
 
     public Gpx parse(InputStream in) throws XmlPullParserException, IOException {
